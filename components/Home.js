@@ -1,14 +1,5 @@
 import React, { Component } from "react";
-import {
-  Container,
-  Header,
-  Content,
-  Input,
-  Item,
-  Form,
-  Button,
-  Text
-} from "native-base";
+import { Container, Header, Content, Text } from "native-base";
 export class Home extends Component {
   render() {
     // console.log("====================================");
@@ -18,11 +9,15 @@ export class Home extends Component {
       email,
       firstName,
       id,
-      lastName
+      lastName,
+      image
     } = this.props.navigation.state.params;
     return (
       <Container>
-        <Text>{this.props.navigation.state.params.firstName}</Text>
+        <Header />
+        <Content>
+          <Text>{`Welcome, ${firstName} ${lastName}`}</Text>
+        </Content>
       </Container>
     );
   }

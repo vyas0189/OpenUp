@@ -20,14 +20,14 @@ class SignUp extends Component {
     lastName: "",
     email: "",
     image: null,
-    password: ""
+    password: "",
+    err: null
   };
 
   handleChange = (name, event) => {
     this.setState({ [name]: event });
   };
   upLoadData = e => {
-    let userId = uuid.v4();
     let { firstName, lastName, email, image, password } = this.state;
 
     firebase
@@ -43,22 +43,26 @@ class SignUp extends Component {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            image: image,
+            image:
+              "https://cdn.pixabay.com/photo/2017/06/26/02/47/people-2442565__340.jpg",
             password: password
           })
           .then(() => {
             console.log("INSERTED!");
           })
           .catch(err => {
-            console.log(err);
+            this.setState({ err: err.message });
+            console.log(err.message);
           });
       })
       .catch(err => {
-        console.log(err);
+        this.setState({ err: err.message });
+        console.log(err.message);
       });
   };
 
   render() {
+    const error = this.state.err ? <Text>{this.state.err}</Text> : null;
     return (
       <Container>
         <Header />
@@ -109,6 +113,7 @@ class SignUp extends Component {
                 <Text>Submit</Text>
               </Button>
             </View>
+            {error}
           </Form>
         </Content>
       </Container>

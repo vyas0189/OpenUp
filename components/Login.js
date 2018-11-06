@@ -16,7 +16,8 @@ import firebase from "firebase";
 class Home extends Component {
   state = {
     email: "",
-    password: ""
+    password: "",
+    err: null
   };
 
   handleChange = (name, event) => {
@@ -41,12 +42,20 @@ class Home extends Component {
           .then(snapshot => {
             Actions.home(snapshot.val());
           })
-          .catch(err => console.log(err));
+          .catch(err => {
+            this.setState({ err: err.message });
+            console.log(err.message);
+          });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        this.setState({ err: err.message });
+        console.log(err.message);
+      });
   };
 
   render() {
+    const error = this.state.err ? <Text>{this.state.err}</Text> : null;
+
     return (
       <Container>
         <Header />
@@ -83,6 +92,7 @@ class Home extends Component {
               </Button>
             </View>
           </Form>
+          {error}
         </Content>
       </Container>
     );
