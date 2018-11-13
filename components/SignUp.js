@@ -11,7 +11,8 @@ import {
   Text
 } from "native-base";
 import firebase from "firebase";
-import uuid from "react-native-uuid";
+import "firebase/firestore";
+import { Actions } from "react-native-router-flux";
 //import AddImage from "./AddImage";
 
 class SignUp extends Component {
@@ -28,16 +29,19 @@ class SignUp extends Component {
     this.setState({ [name]: event });
   };
   upLoadData = e => {
+    const db = firebase.firestore();
+    db.settings({
+      timestampsInSnapshots: true
+    });
     let { firstName, lastName, email, image, password } = this.state;
-
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(newUser => {
-        firebase
-          .database()
-          .ref()
-          .child(`users/${newUser.user.uid}`)
+        const id = newUser.user.uid;
+        const insertPath = db.collection("users").doc(`${id}`);
+
+        insertPath
           .set({
             id: newUser.user.uid,
             firstName: firstName,
@@ -45,10 +49,12 @@ class SignUp extends Component {
             email: email,
             image:
               "https://cdn.pixabay.com/photo/2017/06/26/02/47/people-2442565__340.jpg",
-            password: password
+            password: password,
+            isLoggedIn: false
           })
           .then(() => {
             console.log("INSERTED!");
+            Actions.login();
           })
           .catch(err => {
             this.setState({ err: err.message });

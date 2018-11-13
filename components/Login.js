@@ -13,15 +13,21 @@ import { View } from "react-native";
 import { Actions } from "react-native-router-flux";
 import firebase from "firebase";
 
-class Home extends Component {
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    console.log("====================================");
+    console.log("Login");
+    console.log("====================================");
+  }
   state = {
     email: "",
     password: "",
-    err: null
+    err: null,
+    status: false
   };
 
   handleChange = (name, event) => {
-    // console.log(name, event);
     this.setState({ [name]: event });
   };
 
@@ -34,18 +40,8 @@ class Home extends Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(user => {
-        firebase
-          .database()
-          .ref(`users/${user.user.uid}`)
-          .once("value")
-          .then(snapshot => {
-            Actions.home(snapshot.val());
-          })
-          .catch(err => {
-            this.setState({ err: err.message });
-            console.log(err.message);
-          });
+      .then(() => {
+        Actions.home();
       })
       .catch(err => {
         this.setState({ err: err.message });
@@ -98,4 +94,4 @@ class Home extends Component {
     );
   }
 }
-export default Home;
+export default Login;
